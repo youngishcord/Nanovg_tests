@@ -10,6 +10,7 @@ add_executable(myapp
 
 include_directories(
   lib/nanovg/src
+  include
 )
 
 
