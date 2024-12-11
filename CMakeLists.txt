@@ -5,7 +5,13 @@ project (myapp)
 # The main executable
 add_executable(myapp
   src/main.c
+  lib/nanovg/src/nanovg.c
 )
+
+include_directories(
+  lib/nanovg/src
+)
+
 
 target_compile_options(myapp PRIVATE -Wall)
 
