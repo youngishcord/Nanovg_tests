@@ -9,9 +9,21 @@
 #include <math.h>
 
 #include "circle.h"
+#include "objectController.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+
+#define ARRAY_SIZE 5
+
+Object* array[ARRAY_SIZE] = {NULL, NULL, NULL, NULL, NULL};
+int counter = 0;
+
+int updateCounter(int counter) {
+	counter++;
+	counter = counter % ARRAY_SIZE;
+	return counter;
+}
 
 void errorCallback(int error, const char *description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -32,13 +44,20 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		
 		int windowHight;
 		glfwGetWindowSize(window, NULL, &windowHight);
-		mouseY = windowHight - mouseY;
+		
+		// mouseY = windowHight - mouseY;
 
-        if (is_inside_circle(mouseX, mouseY, 100, 100, 100)) {
-			printf("click on circle\n");
-		} else {
-			printf("%f - %f\n", mouseX, mouseY);
-		}
+		// ТУТ НУЖЕН ДЕСТРОЙ ОБЪЕКТОВ
+		array[counter] = createObject(createCircle(
+			mouseX, mouseY, 50.0f, nvgRGBA(100, 200, 100, 200)
+		));
+
+		counter = updateCounter(counter);
+        // if (is_inside_circle(mouseX, mouseY, 100, 100, 100)) {
+		// 	printf("click on circle\n");
+		// } else {
+		// 	printf("%f - %f\n", mouseX, mouseY);
+		// }
     }
 }
 int main() {
@@ -54,6 +73,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE); // Прозрачность
 
     GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "NanoVG Example", NULL, NULL);
     if (!window) {
@@ -85,8 +105,12 @@ int main() {
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
 
-	// Завел стурктуру круга
-	Circle circle = {100.0f, 100.0f, 100.0f, nvgRGBA(100, 100, 100, 255)};
+	// // Завел стурктуру круга
+	// Circle circle = {100.0f, 200.0f, 100.0f, nvgRGBA(100, 200, 100, 255)};
+	// Object array[1];
+
+	// array[0].object = (void*) &circle;
+	// array[0].objectType = CIRCLE;
 
     while (!glfwWindowShouldClose(window)) {
         int winWidth, winHeight;
@@ -100,8 +124,10 @@ int main() {
 
         // Очистка буфера
         glViewport(0, 0, fbWidth, fbHeight);
-        glClearColor(0.3f, 0.3f, 0.32f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        // glClearColor(0.3f, 0.3f, 0.32f, 1.0f);
+		glClearColor(0.3f, 0.3f, 0.3f, 0.f); // Альфа-значение 0 для прозрачного фона
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Рисование с использованием NanoVG
         nvgBeginFrame(vg, winWidth, winHeight, pxRatio);
@@ -111,7 +137,14 @@ int main() {
         // nvgCircle(vg, winWidth / 2, winHeight / 2, 100);
         // nvgFillColor(vg, nvgRGBA(255, 192, 0, 255));
         // nvgFill(vg);
-		drawWrapper(vg, &circle);
+
+		// drawWrapper(vg, &circle);
+		// objectDraw(vg, &array[0]);
+		for (int i = 0; i < ARRAY_SIZE; i++) {
+			if (array[i]) {
+				objectDraw(vg, array[i]);
+			}
+		}
 
 
         nvgEndFrame(vg);

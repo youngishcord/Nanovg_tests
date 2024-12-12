@@ -31,4 +31,17 @@ void drawWrapper(NVGcontext* vg, Circle* object) {
 	nvgFill(vg);
 }
 
+void destroy(Circle* object) {
+    free(object);
+}
+
+Circle* createCircle(double xPos, double yPos, double radius, NVGcolor color) {
+	Circle* circle = malloc(sizeof(Circle));
+	circle->xPos = xPos;
+	circle->yPos = yPos;
+	circle->radius = radius;
+	circle->color = color;
+	return circle;
+}
+
 #endif // CIRCLE_H
