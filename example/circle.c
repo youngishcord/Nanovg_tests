@@ -1,4 +1,3 @@
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -6,9 +5,6 @@
 #include <nanovg.h>
 #include <nanovg_gl.h> // Для использования с OpenGL
 #include <stdio.h>
-#include <math.h>
-
-#include "circle.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -21,26 +17,6 @@ void pressCallback() {
 	fprintf(stdout, "Click!");
 }
 
-// int is_inside_circle(float x, float y, float rx, float ry, float radius) {
-// 	return pow(x-rx, 2) + pow(y-ry, 2) < pow(radius, 2);
-// }
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		double mouseX, mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-		
-		int windowHight;
-		glfwGetWindowSize(window, NULL, &windowHight);
-		mouseY = windowHight - mouseY;
-
-        if (is_inside_circle(mouseX, mouseY, 100, 100, 100)) {
-			printf("click on circle\n");
-		} else {
-			printf("%f - %f\n", mouseX, mouseY);
-		}
-    }
-}
 int main() {
     // Инициализация GLFW
     if (!glfwInit()) {
@@ -82,12 +58,6 @@ int main() {
         return -1;
     }
 
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-
-
-	// Завел стурктуру круга
-	Circle circle = {100.0f, 100.0f, 100.0f, nvgRGBA(100, 100, 100, 255)};
-
     while (!glfwWindowShouldClose(window)) {
         int winWidth, winHeight;
         int fbWidth, fbHeight;
@@ -107,12 +77,10 @@ int main() {
         nvgBeginFrame(vg, winWidth, winHeight, pxRatio);
 
         // Рисуем круг
-        // nvgBeginPath(vg);
-        // nvgCircle(vg, winWidth / 2, winHeight / 2, 100);
-        // nvgFillColor(vg, nvgRGBA(255, 192, 0, 255));
-        // nvgFill(vg);
-		drawWrapper(vg, &circle);
-
+        nvgBeginPath(vg);
+        nvgCircle(vg, winWidth / 2, winHeight / 2, 100);
+        nvgFillColor(vg, nvgRGBA(255, 192, 0, 255));
+        nvgFill(vg);
 
         nvgEndFrame(vg);
 
