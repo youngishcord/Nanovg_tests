@@ -2,6 +2,8 @@
 cmake_minimum_required (VERSION 3.14)
 project (myapp)
 
+set(CMAKE_C_STANDARD 99)
+
 # The main executable
 add_executable(myapp
   src/main.c

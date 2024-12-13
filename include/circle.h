@@ -20,15 +20,16 @@ int is_inside_circle(float x, float y, float rx, float ry, float radius) {
 	return pow(x-rx, 2) + pow(y-ry, 2) < pow(radius, 2);
 }
 
-void setColor(Circle* object, int r, int g, int b, int alpha) {
+void setCircleColor(Circle* object, int r, int g, int b, int alpha) {
 	object->color = nvgRGBA(r, g, b, alpha);
 }
 
-void drawWrapper(NVGcontext* vg, Circle* object) {
+void drawCircle(NVGcontext* vg, Circle* object) {
 	nvgBeginPath(vg);
 	nvgCircle(vg, object->xPos, object->yPos, object->radius);
 	nvgFillColor(vg, object->color);
 	nvgFill(vg);
+	nvgClosePath(vg); // Надо ли оно тут
 }
 
 void destroy(Circle* object) {
